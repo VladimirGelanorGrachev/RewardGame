@@ -13,10 +13,11 @@ namespace Rewards
         [SerializeField] private TMP_Text _countReward;
 
 
-        public void SetData(Reward reward, int countDay, bool isSelected)
+        public void SetData(Reward reward, int countWeek, bool isSelected)
         {
             _iconCurrency.sprite = reward.IconCurrency;
-            _textDays.text = $"Day {countDay}";
+            //_textDays.text = $"Day {countDay}";
+            _textDays.text = $"Week {countWeek}";
             _countReward.text = reward.CountCurrency.ToString();
 
             UpdateBackground(isSelected);

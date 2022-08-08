@@ -21,12 +21,10 @@ namespace Rewards
 
         [field: Header("Ui Elements")]
         [field: SerializeField] public TMP_Text TimerNewReward { get; private set; }
-        [field: SerializeField] public Transform MountRootSlotsReward { get; private set; }
-        [field: SerializeField] public Transform MountRootWeeklyReward { get; private set; }
+        [field: SerializeField] public Transform MountRootSlotsReward { get; private set; }        
         [field: SerializeField] public ContainerSlotRewardView ContainerSlotRewardPrefab { get; private set; }
         [field: SerializeField] public Button GetRewardButton { get; private set; }
-        [field: SerializeField] public Button ResetButton { get; private set; }
-        [field: SerializeField] public Button GetWeekRewardButton { get; private set; }
+        [field: SerializeField] public Button ResetButton { get; private set; }        
 
         public int CurrentSlotInActive
         {

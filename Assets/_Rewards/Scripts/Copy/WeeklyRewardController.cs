@@ -6,20 +6,19 @@ using Object = UnityEngine.Object;
 
 namespace Rewards
 {
-    internal class DailyRewardController
+    internal class WeeklyRewardController
     {
-        private readonly DailyRewardView _view;        
+        private readonly WeeklyRewardView _view;
 
-        private List<ContainerSlotRewardView> _slots;       
+        private List<ContainerSlotRewardView> _slots;
         private Coroutine _coroutine;
 
         private bool _isGetReward;
         private bool _isInitialized;
 
-
-        public DailyRewardController(DailyRewardView view)
+        public WeeklyRewardController(WeeklyRewardView view)
         {
-            _view = view;            
+            _view = view;
         }
 
         public void Init()
@@ -52,23 +51,21 @@ namespace Rewards
         {
             _slots = new List<ContainerSlotRewardView>();
 
-            for (int i = 0; i < _view.Rewards.Count; i++)
-            //for (int i = 0; i < _view.Weekly.Count; i++) //не совсем то что нужно
+            //for (int i = 0; i < _view.Rewards.Count; i++)
+            for (int i = 0; i < _view._rewards.Rewards.Count; i++) //не совсем то что нужно
             {
                 ContainerSlotRewardView instanceSlot = CreateSlotRewardView();
                 _slots.Add(instanceSlot);
-            }            
+            }
         }
 
         private ContainerSlotRewardView CreateSlotRewardView() =>
-            Object.Instantiate
-            (
-                _view.ContainerSlotRewardPrefab,
-                _view.MountRootSlotsReward,                
-                false
-            );
-
-        
+           Object.Instantiate
+           (
+               _view._rewards.ContainerSlotRewardView,
+               _view.MountRootSlotsReward,
+               false
+           );
 
         private void DeinitSlots()
         {
@@ -107,13 +104,13 @@ namespace Rewards
         private void SubscribeButtons()
         {
             _view.GetRewardButton.onClick.AddListener(ClaimReward);
-            _view.ResetButton.onClick.AddListener(ResetRewardsState);            
+            _view.ResetButton.onClick.AddListener(ResetRewardsState);
         }
 
         private void UnsubscribeButtons()
         {
             _view.GetRewardButton.onClick.RemoveListener(ClaimReward);
-            _view.ResetButton.onClick.RemoveListener(ResetRewardsState);            
+            _view.ResetButton.onClick.RemoveListener(ResetRewardsState);
         }
 
         private void ClaimReward()
@@ -121,8 +118,8 @@ namespace Rewards
             if (!_isGetReward)
                 return;
 
-            Reward reward = _view.Rewards[_view.CurrentSlotInActive];
-            //Reward reward = _view.Weekly[_view.CurrentSlotInActive];//не вариант.... надо думать
+            //Reward reward = _view.Rewards[_view.CurrentSlotInActive];
+            Reward reward = _view._rewards.Rewards[_view.CurrentSlotInActive];//не вариант.... надо думать
 
             switch (reward.RewardType)
             {
@@ -137,13 +134,11 @@ namespace Rewards
                     break;
             }
 
-            _view.TimeGetReward = DateTime.UtcNow;            
-            _view.CurrentSlotInActive++;            
+            _view.TimeGetReward = DateTime.UtcNow;
+            _view.CurrentSlotInActive++;
 
             RefreshRewardsState();
         }
-
-
         private void RefreshRewardsState()
         {
             bool gotRewardEarlier = _view.TimeGetReward.HasValue;
@@ -163,7 +158,7 @@ namespace Rewards
                 timeFromLastRewardGetting.Seconds >= _view.TimeCooldown;
 
             if (isDeadlineElapsed)
-                ResetRewardsState();            
+                ResetRewardsState();
 
             _isGetReward = isTimeToGetNewReward;
         }
@@ -206,12 +201,13 @@ namespace Rewards
         {
             for (var i = 0; i < _slots.Count; i++)
             {
-                Reward reward = _view.Rewards[i];
-                int countDay = i + 1;
+                Reward reward = _view._rewards.Rewards[i];
+                int countWeek = i + 1;
                 bool isSelected = i == _view.CurrentSlotInActive;
 
-                _slots[i].SetData(reward, countDay, isSelected);
+                _slots[i].SetData(reward, countWeek, isSelected);
             }
         }
     }
 }
+
